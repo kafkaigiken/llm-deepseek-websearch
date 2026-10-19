@@ -1,0 +1,44 @@
+[project]
+name = "llm-deepseek-websearch"
+version = "0.1"
+description = "DeepSeek web search and fetch tools for LLM"
+readme = "README.md"
+authors = [{name = "Iqbal Abdullah"}]
+license = "Apache-2.0"
+keywords = ["llm", "llm-plugin", "deepseek", "web-search", "tools"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Environment :: Plugins",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Topic :: Internet :: WWW/HTTP :: Indexing/Search",
+]
+requires-python = ">=3.10"
+dependencies = [
+    # 0.33 is the first llm release that depends on httpx2.
+    "llm>=0.33",
+    "httpx2",
+]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["llm_deepseek_websearch"]
+
+[project.urls]
+Homepage = "https://github.com/kafkaigiken/llm-deepseek-websearch"
+Changelog = "https://github.com/kafkaigiken/llm-deepseek-websearch/releases"
+Issues = "https://github.com/kafkaigiken/llm-deepseek-websearch/issues"
+CI = "https://github.com/kafkaigiken/llm-deepseek-websearch/actions"
+
+[project.entry-points.llm]
+llm_deepseek_websearch = "llm_deepseek_websearch"
+
+[project.optional-dependencies]
+test = ["pytest"]
