@@ -2,6 +2,7 @@ import json
 from datetime import datetime, timedelta, timezone
 from email.utils import format_datetime
 
+import brotli
 import httpx2
 import llm
 import pytest
@@ -377,6 +378,31 @@ def test_error_body_is_capped(monkeypatch, sleeps):
     message = str(excinfo.value)
     assert "[...]" in message
     assert len(message) < llm_deepseek_websearch.MAX_ERROR_CHARS + 100
+
+
+def test_brotli_body_is_decoded(monkeypatch):
+    payload = json.dumps({"results": [SEARCH_RESULT]}).encode()
+    mock_api(
+        monkeypatch,
+        lambda request: httpx2.Response(
+            200,
+            content=brotli.compress(payload),
+            headers={"content-encoding": "br"},
+        ),
+    )
+    assert "DeepSeek API Docs" in deepseek_web_search("q")
+
+
+def test_corrupt_brotli_body_is_retried_then_reported(monkeypatch, sleeps):
+    mock_api(
+        monkeypatch,
+        lambda request: httpx2.Response(
+            200, content=b"not brotli", headers={"content-encoding": "br"}
+        ),
+    )
+    with pytest.raises(DeepSeekError, match="request failed"):
+        deepseek_web_search("q")
+    assert sleeps == [1, 2]
 
 
 def test_corrupt_gzip_body_is_retried_then_reported(monkeypatch, sleeps):

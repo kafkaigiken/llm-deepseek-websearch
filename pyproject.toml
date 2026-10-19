@@ -1,6 +1,6 @@
 [project]
 name = "llm-deepseek-websearch"
-version = "0.1"
+version = "0.2"
 description = "DeepSeek web search and fetch tools for LLM"
 readme = "README.md"
 authors = [{name = "Iqbal Abdullah"}]
@@ -21,7 +21,9 @@ requires-python = ">=3.10"
 dependencies = [
     # 0.33 is the first llm release that depends on httpx2.
     "llm>=0.33",
-    "httpx2",
+    # The brotli extra pulls in Brotli 1.2 or newer. httpx2 2.12 cannot decode
+    # brotli replies with Brotli 1.1, and the API sends brotli when offered.
+    "httpx2[brotli]",
 ]
 
 [build-system]
